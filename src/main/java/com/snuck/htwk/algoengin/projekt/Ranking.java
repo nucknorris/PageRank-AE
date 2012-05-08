@@ -14,7 +14,9 @@ public class Ranking {
 	public static void main(String[] args) {
 		generator = new SampleDataGenerator();
 		Ranking ranking = new Ranking();
-		System.out.print(ranking.rank("A") + ranking.rank("B") + ranking.rank("C"));
+		System.out.print("PR(A)= " + ranking.rank("A") + ", PR(B)=" + ranking.rank("B")
+		        + ", PR(C)=" + ranking.rank("C"));
+		generator.visualizeGraph();
 	}
 
 	/*

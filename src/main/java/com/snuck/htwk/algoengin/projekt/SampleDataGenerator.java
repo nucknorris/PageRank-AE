@@ -20,7 +20,7 @@ import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
  * 
  */
 public class SampleDataGenerator {
-	private static Graph<String, String>	graph;
+	private Graph<String, String>	graph;
 
 	public SampleDataGenerator() {
 		graph = new DirectedSparseMultigraph<String, String>();
@@ -34,8 +34,8 @@ public class SampleDataGenerator {
 		graph.addEdge("C-A", "C", "A");
 	}
 
-	public void visualizeGraph(Graph<String, String> g) {
-		Layout<String, String> layout = new CircleLayout<String, String>(g);
+	public void visualizeGraph() {
+		Layout<String, String> layout = new CircleLayout<String, String>(graph);
 		layout.setSize(new Dimension(300, 300));
 		BasicVisualizationServer<String, String> server =
 		        new BasicVisualizationServer<String, String>(layout);
@@ -78,5 +78,9 @@ public class SampleDataGenerator {
 	private String cleanString(String string, String vertice) {
 		return string.replace("[", "").replace("]", "").replace(",", "")
 		        .replace(vertice, "").trim();
+	}
+
+	public Graph<String, String> getGraph() {
+		return this.graph;
 	}
 }
