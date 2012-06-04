@@ -20,7 +20,7 @@ public class GraphGenerator {
 	private Graph<RDFNode, Statement>	graph;
 
 	public GraphGenerator() {
-		String resource = "file:///Users/sebastian/Downloads/page.rdf";
+		String resource = "rdf/page_s.rdf";
 		Model model = FileManager.get().loadModel(resource);
 
 		// vertices: RDFNodes, edges: Statements
