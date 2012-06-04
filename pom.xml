@@ -53,6 +53,11 @@
 			<artifactId>JenaJung</artifactId>
 			<version>0.1.1</version>
 		</dependency>
+		<dependency>
+			<groupId>com.carrotsearch</groupId>
+			<artifactId>junit-benchmarks</artifactId>
+			<version>0.3.0</version>
+		</dependency>
 	</dependencies>
 
 </project>

@@ -1,22 +1,37 @@
 package com.snuck.htwk.algoengin.projekt;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import net.rootdev.jenajung.JenaJungGraph;
 import Jama.Matrix;
 
-public class Ranking {
-	private final double	           DAMPING_FACTOR	= 0.5;
-	private List<String>	           parameters	  = new ArrayList<String>();
-	private static SampleDataGenerator	generator;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.util.FileManager;
+
+import edu.uci.ics.jung.graph.Graph;
+
+public class TripleRanking {
+	private final double	                 DAMPING_FACTOR	= 0.5;
+	private List<String>	                 parameters	    = new ArrayList<String>();
+	private static SampleGraphGenerator	     generator;
+	private static Graph<RDFNode, Statement>	graph;
 
 	public static void main(String[] args) {
-		generator = new SampleDataGenerator();
-		Ranking ranking = new Ranking();
-		System.out.print("PR(A)= " + ranking.rank("A") + ", PR(B)=" + ranking.rank("B")
-		        + ", PR(C)=" + ranking.rank("C"));
-		generator.visualizeGraph();
+		TripleRanking ranking = new TripleRanking();
+		String resource = "file:///Users/sebastian/Downloads/page_yo.rdf";
+		Model model = FileManager.get().loadModel(resource);
+
+		// vertices: RDFNodes, edges: Statements
+		graph = new JenaJungGraph(model);
+
+		System.out.println(graph.getVertexCount());
+		ranking.rank("http://dbpedia.org/resource/Internet_Society");
+
 	}
 
 	/*
@@ -70,11 +85,11 @@ public class Ranking {
 		if (sourceId.equals(linkId))
 			return 1;
 		else {
-			String[] inboundLinks = generator.getInboundLinks(sourceId);
+			String[] inboundLinks = generator.getIncomingPageLinks(sourceId);
 			for (int i = 0; i < inboundLinks.length; i++) {
 				if (inboundLinks[i].equals(linkId)) {
 					return -1
-					        * (DAMPING_FACTOR / generator.getOutboundLinks(linkId).length);
+					        * (DAMPING_FACTOR / generator.getOutgoingPageLinks(linkId).length);
 				}
 			}
 		}
@@ -93,7 +108,7 @@ public class Ranking {
 		}
 
 		// Get list of the inbound pages
-		String[] inboundPages = generator.getInboundLinks(pageId);
+		String[] inboundPages = generator.getIncomingPageLinks(pageId);
 
 		// Add the inbound links to the params list and do same for inbound
 		// links
@@ -104,29 +119,27 @@ public class Ranking {
 		}
 	}
 
-	// /*
-	// * Return list of the inbound links to a given page.
-	// */
-	// private String[] getInboundLinks(String pageId) {
-	//
-	// // This simulates a simple page collection
-	// Map<String, String[]> map = new HashMap<String, String[]>();
-	// map.put("A", new String[] { "C" });
-	// map.put("B", new String[] { "A" });
-	// map.put("C", new String[] { "A", "B" });
-	// return (String[]) map.get(pageId);
-	// }
-	//
-	// /*
-	// * Returns list of the outbound links from a page.
-	// */
-	// private String[] getOutboundLinks(String pageId) {
-	//
-	// // This simulates a simple page collection
-	// Map<String, String[]> map = new HashMap<String, String[]>();
-	// map.put("A", new String[] { "B", "C" });
-	// map.put("B", new String[] { "C" });
-	// map.put("C", new String[] { "A", "D", "E", "F" });
-	// return (String[]) map.get(pageId);
-	// }
+	public String[] getInboundLinks(RDFNode vertice) {
+		List<String> inboundLinks = new ArrayList<String>();
+
+		Collection<Statement> listOfInboundEdges = graph.getInEdges(vertice);
+		for (Statement inboundEdge : listOfInboundEdges) {
+			Collection<RDFNode> c = graph.getIncidentVertices(inboundEdge);
+			inboundLinks.add(c.toString());
+		}
+		String[] l = new String[inboundLinks.size()];
+		return inboundLinks.toArray(l);
+	}
+
+	public String[] getOutboundLinks(RDFNode vertice) {
+		List<String> outboundLinks = new ArrayList<String>();
+
+		Collection<Statement> listOfOutboundEdges = graph.getOutEdges(vertice);
+		for (Statement outboundEdge : listOfOutboundEdges) {
+			Collection<RDFNode> c = graph.getIncidentVertices(outboundEdge);
+			outboundLinks.add(c.toString());
+		}
+		String[] l = new String[outboundLinks.size()];
+		return outboundLinks.toArray(l);
+	}
 }
