@@ -24,10 +24,10 @@ public class PageRanking {
 	public double rank(String pageId) {
 		createPageList(pageId);
 
-		System.out.println("pages:");
-		for (String page : pages) {
-			System.out.println(page);
-		}
+		// System.out.println("pages:");
+		// for (String page : pages) {
+		// System.out.println(page);
+		// }
 
 		Matrix a = new Matrix(generateMatrix());
 		System.out.println("\nmatrix a: ");
@@ -86,14 +86,14 @@ public class PageRanking {
 		if (sourcePage.equals(linkPage))
 			return 1;
 		else {
-			System.out.println(String.format("\n*******\nsourcePage: %s, \nlinkPage: %s",
-			        sourcePage,
-			        linkPage));
+			// System.out.println(String.format("\n*******\nsourcePage: %s, \nlinkPage: %s",
+			// sourcePage,
+			// linkPage));
 			String[] inboundLinks = generator.getIncomingPageLinks(sourcePage);
-			System.out.println("inbound links of source page: ");
-			for (String string : inboundLinks) {
-				System.out.println(string);
-			}
+			// System.out.println("inbound links of source page: ");
+			// for (String string : inboundLinks) {
+			// System.out.println(string);
+			// }
 			for (int i = 0; i < inboundLinks.length; i++) {
 				if (inboundLinks[i].equals(linkPage)) {
 					return -1 * (DAMPING_FACTOR / generator.getOutgoingPageLinks(linkPage).length);
@@ -110,7 +110,7 @@ public class PageRanking {
 	 * @param page
 	 */
 	private void createPageList(String page) {
-		System.out.println("begin createPageList for " + page);
+		// System.out.println("begin createPageList for " + page);
 
 		if (!pages.contains(page)) {
 			pages.add(page);
@@ -118,16 +118,17 @@ public class PageRanking {
 
 		String[] incomingPages = generator.getIncomingPageLinks(page);
 
-		System.out.println("incoming pages of " + page + " (" + incomingPages.length + "):");
-		for (String string : incomingPages) {
-			System.out.println(string);
-		}
+		// System.out.println("incoming pages of " + page + " (" +
+		// incomingPages.length + "):");
+		// for (String string : incomingPages) {
+		// System.out.println(string);
+		// }
 		for (int i = 0; i < incomingPages.length; i++) {
 			if (!pages.contains(incomingPages[i])) {
 				createPageList(incomingPages[i]);
 			}
 		}
-		System.out.println("end createPageList for " + page);
+		// System.out.println("end createPageList for " + page);
 	}
 
 	private void printMatrix(Matrix matrix) {
